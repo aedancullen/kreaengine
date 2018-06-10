@@ -4,14 +4,14 @@
 #
 
 import irload
+import multiprocessing
+from multiprocessing import managers
+
 
 default_measureir = irload.read_module_from_file("default_measure.ll")
 
 class NoHostRetryException(Exception): pass
 
-import multiprocessing
-from multiprocessing import managers
-from base64 import b64encode, b64decode
 
 PS_PORT = 17100
 
