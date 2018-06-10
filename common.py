@@ -22,17 +22,8 @@ _psw = ParamSyncInterface()
 setattr(_psw, PSIF_SYNC_FUNC, lambda *args,**kwargs:_host_sync_callable(*args,**kwargs))
 
 
-class HostParamSyncManager(managers.BaseManager):
-	def __init__(self, *args, **kwargs):
-		kwargs["address"] = ("", PS_PORT)
-		super().__init__(*args, **kwargs)
-
-class WorkerParamSyncManager(managers.BaseManager):
-	def __init__(self, *args, **kwargs):
-		kwargs["authkey"] = b64decode(kwargs["authkey"] + b"=")
-		kwargs["address"] = (kwargs["address"], PS_PORT)
-		super().__init__(*args, **kwargs)
-
+class HostParamSyncManager(managers.BaseManager): pass
+class WorkerParamSyncManager(managers.BaseManager): pass
 
 HostParamSyncManager.register(PSIF_REG_STR, callable=lambda:_psw)
 WorkerParamSyncManager.register(PSIF_REG_STR)
@@ -41,18 +32,18 @@ WorkerParamSyncManager.register(PSIF_REG_STR)
 _hostmanager = None
 _workermanager = None
 
-def host_startsync(host_sync_callable):
+def host_startsync(host_sync_callable, authkey):
 	global _host_sync_callable, _hostmanager
 
 	_host_sync_callable = host_sync_callable
-	_hostmanager = HostParamSyncManager()
+	_hostmanager = HostParamSyncManager(address=("", PS_PORT), authkey=authkey)
 	_hostmanager.start()
 	return b64encode(multiprocessing.current_process().authkey)[:-1]
 
-def worker_getsync(addrstr, b64authkey):
+def worker_getsync(addrstr, authkey):
 	global _workermanager
 
-	_workermanager = WorkerParamSyncManager(address=addrstr, authkey=b64authkey)
+	_workermanager = WorkerParamSyncManager(address=(addrstr, PS_PORT), authkey=authkey)
 	_workermanager.connect()
 	syncif = getattr(_workermanager, PSIF_REG_STR)()
 	return getattr(syncif, PSIF_SYNC_FUNC)
