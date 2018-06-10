@@ -4,13 +4,31 @@
 #
 
 import common
+import machine
+import measure
 
 class EngineWorker:
 
 	def __init__(self):
-		self.machineset = None
-		self.optimizeset = None
+
+		self.machine = KreaLLMachine()
+		
+		self.measureir = None
+		self.measure = None
+
+		self.assign_machineset(None)
+		self.assign_optimizeset(None)
+
+	def assign_machineset(self, machineset):
+		self.machineset = machineset
+		self.machineset_hash = hash(self.machineset)
+
+	def assign_optimizeset(self, optimizeset):
+		self.optimizeset = optimizeset
+		self.optimizeset_hash = hash(self.optimizeset)
 	
+
+
 	def configure(self, addrstr, authkey):
 		try:
 			self.remote_sync = common.worker_getsync(addrstr, authkey)
@@ -21,21 +39,22 @@ class EngineWorker:
 
 	def sync(self, updateset_merge):
 
-		machineset_hash = hash(self.machineset)
-		optimizeset_hash = hash(self.optimizeset)
-
 		try:
-			(machineset,optimizeset) = self.remote_sync(machineset_hash,optimizeset_hash,updateset_merge)
+			(machineset,optimizeset) = self.remote_sync(
+				self.machineset_hash,
+				self.optimizeset_hash,
+				updateset_merge
+			)
 		except:
 			raise common.NoHostRetryException("Sync missed; wait for host, then reconfigure")
 		
-		self.machineset = machineset if machineset is not None else self.machineset
-		self.optimizeset = optimizeset if optimizeset is not None else self.machineset
+		if machineset is not None: self.assign_machineset(machineset)
+		if optimizeset is not None: self.assign_optimizeset(optimizeset)
 
 
 	def tick(self):
 
-		# ....
+		self.machine.
 
 		self.sync(newset.diff(self.optimizeset))
 

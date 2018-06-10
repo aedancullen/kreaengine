@@ -15,10 +15,13 @@ backing_mod = llvmbinding.parse_assembly("")
 engine = llvmbinding.create_mcjit_compiler(backing_mod, target_machine)
 
 
-def bind_funcs_from_module(filename, bind_funcs):
+def read_module_from_file(filename):
     ir = None
     with open(filename, "r") as irfile:
         ir = irfile.read()
+    return ir
+
+def bind_funcs_from_module(ir, bind_funcs):
     mod = llvmbinding.parse_assembly(ir)
     mod.verify()
     engine.add_module(mod)

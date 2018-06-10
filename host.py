@@ -31,10 +31,10 @@ class EngineHost:
 		with self.statelock:
 			self.mode_recurrent = mode_recurrent
 
-	def sync_enable(self):
+	def enable_sync(self):
 		self.enable.set()
 
-	def sync_disable(self):
+	def disable_sync(self):
 		self.enable.clear()
 
 		
@@ -55,23 +55,26 @@ class EngineHost:
 		ret_machineset = None
 		ret_optimizeset = None
 
-		with self.statelock:
+		if updateset_merge is not None:
+			with self.statelock:
 
-			if updateset_merge is not None:
-	
-					self.optimizeset.merge(updateset_merge)
-					self.optimizeset_hash = hash(self.optimizeset)
-	
-					if self.mode_recurrent:
-						self.machineset = self.optimizeset
-						self.machineset_hash = self.optimizeset_hash
+				self.optimizeset.merge(updateset_merge)
+				self.optimizeset_hash = hash(self.optimizeset)
+
+				if self.mode_recurrent:
+					self.machineset = self.optimizeset
+					self.machineset_hash = self.optimizeset_hash
+
+
+		# Release statelock to wait, since hashes/sets may change
+		self.enable.wait()
+
+		with self.statelock:
 	
 			if self.machineset_hash != machineset_hash:
 				ret_machineset = self.machineset
 			if self.optimizeset_hash != optimizeset_hash:
 				ret_optimizeset = self.optimizeset
 
-
-		self.enable.wait()
 
 		return ret_machineset, ret_optimizeset

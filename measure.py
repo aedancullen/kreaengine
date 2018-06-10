@@ -6,7 +6,6 @@
 import irload
 import ctypes as c
 
-KMEASURE_IR_FN = "kmeasure.ll"
 KMEASURE_IR_FUNCS = [
     ("1",),
     ("2",),
@@ -14,8 +13,8 @@ KMEASURE_IR_FUNCS = [
 
 class KreaLLMeasure:
 
-    def __init__(self):
+    def __init__(self, ir):
         bound_funcs = irload.bind_funcs_from_module(
-            KMEASURE_IR_FN, KMEASURE_IR_FUNCS
+            ir, KMEASURE_IR_FUNCS
         )
         self.__dict__.update(bound_funcs)
