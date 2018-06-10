@@ -40,7 +40,6 @@ def host_startsync(host_sync_callable, authkey):
 	_host_sync_callable = host_sync_callable
 	_hostmanager = HostParamSyncManager(address=("", PS_PORT), authkey=authkey)
 	_hostmanager.start()
-	return b64encode(multiprocessing.current_process().authkey)[:-1]
 
 def worker_getsync(addrstr, authkey):
 	global _workermanager
