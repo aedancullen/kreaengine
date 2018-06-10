@@ -39,7 +39,7 @@ class EngineHost:
 
 		
 
-	def run(self, authkey):
+	def configure(self, authkey):
 		return common.host_startsync(self.sync, authkey)
 
 	def set_machineset(machineset):

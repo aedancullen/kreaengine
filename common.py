@@ -3,6 +3,8 @@
 # Copyright (c) 2018 Aedan Cullen.
 #
 
+class NoHostRetryException(Exception): pass
+
 import multiprocessing
 from multiprocessing import managers
 from base64 import b64encode, b64decode
