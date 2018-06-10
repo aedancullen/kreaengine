@@ -8,14 +8,26 @@ import multiprocessing
 
 class EngineHost:
 
-	def __init__(self, machineset=None, optimizeset=None, mode_recurrent=False):
+	def __init__(self,
+			measureir=common.default_measureir,
+			machineset=common.ParamSet(),
+			optimizeset=common.ParamSet(),
+			mode_recurrent=False
+		):
+	
 		self.statelock = multiprocessing.Lock()
 		self.enable = multiprocessing.Event()
 
 		self.mode_recurrent = mode_recurrent
 
+		self.assign_measureir(measureir)
 		self.assign_machineset(machineset)
 		self.assign_optimizeset(optimizeset)
+
+	def assign_measureir(self, measureir):
+		with self.statelock:
+			self.measureir = measureir
+			self.measureir_hash = hash(self.measureir)
 
 	def assign_machineset(self, machineset):
 		with self.statelock:
@@ -50,8 +62,9 @@ class EngineHost:
 		self.optimizeset = optimizeset
 		self.optimizeset_hash = hash(self.optimizeset)
 
-	def sync(self, machineset_hash, optimizeset_hash, updateset_merge):
+	def sync(self, measureir_hash, machineset_hash, optimizeset_hash, updateset_merge):
 
+		ret_measureir = None
 		ret_machineset = None
 		ret_optimizeset = None
 
@@ -71,10 +84,12 @@ class EngineHost:
 
 		with self.statelock:
 	
+			if self.measureir_hash != measureir_hash:
+				ret_measureir = self.measureir
 			if self.machineset_hash != machineset_hash:
 				ret_machineset = self.machineset
 			if self.optimizeset_hash != optimizeset_hash:
 				ret_optimizeset = self.optimizeset
 
 
-		return ret_machineset, ret_optimizeset
+		return ret_measureir, ret_machineset, ret_optimizeset

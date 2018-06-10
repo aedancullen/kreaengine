@@ -3,6 +3,10 @@
 # Copyright (c) 2018 Aedan Cullen.
 #
 
+import irload
+
+default_measureir = irload.read_module_from_file("default_measure.ll")
+
 class NoHostRetryException(Exception): pass
 
 import multiprocessing

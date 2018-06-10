@@ -12,12 +12,15 @@ class EngineWorker:
 	def __init__(self):
 
 		self.machine = KreaLLMachine()
-		
-		self.measureir = None
-		self.measure = None
 
-		self.assign_machineset(None)
-		self.assign_optimizeset(None)
+		self.assign_measureir(common.default_measureir)
+		self.assign_machineset(common.ParamSet())
+		self.assign_optimizeset(common.ParamSet())
+
+	def assign_measureir(self, measureir):
+		self.measureir = measureir
+		self.measureir_hash = hash(self.measureir)
+		self.measure = KreaLLMeasure(self.measureir)
 
 	def assign_machineset(self, machineset):
 		self.machineset = machineset
@@ -40,7 +43,8 @@ class EngineWorker:
 	def sync(self, updateset_merge):
 
 		try:
-			(machineset,optimizeset) = self.remote_sync(
+			(measureir,machineset,optimizeset) = self.remote_sync(
+				self.measureir_hash
 				self.machineset_hash,
 				self.optimizeset_hash,
 				updateset_merge
@@ -48,6 +52,7 @@ class EngineWorker:
 		except:
 			raise common.NoHostRetryException("Sync missed; wait for host, then reconfigure")
 		
+		if measureir is not None: self.assign_measureir(measureir)
 		if machineset is not None: self.assign_machineset(machineset)
 		if optimizeset is not None: self.assign_optimizeset(optimizeset)
 
