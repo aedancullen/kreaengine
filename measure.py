@@ -8,8 +8,6 @@ import ctypes as c
 
 KMEASURE_DEFAULT_FN = "default_measure.ll"
 KMEASURE_IR_FUNCS = [
-    ("1",),
-    ("2",),
 ]
 
 class KreaLLMeasure:

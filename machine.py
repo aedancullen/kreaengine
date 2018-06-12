@@ -8,8 +8,6 @@ import ctypes as c
 
 KMACHINE_DEFAULT_FN = "default_machine.ll"
 KMACHINE_IR_FUNCS = [
-    ("1",),
-    ("2",),
 ]
 
 class KreaLLMachine:
