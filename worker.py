@@ -42,8 +42,6 @@ class EngineWorker:
             self.remote_sync = common.worker_getsync(addrstr, authkey)
         except:
             raise common.NoHostRetryException("Assuming correct authkey, host nonexistent")
-        
-        self.sync(None)
 
     def sync(self, updateset_merge):
 
@@ -62,7 +60,6 @@ class EngineWorker:
         if machineir is not None: self.assign_machineir(machineir)
         if machineset is not None: self.assign_machineset(machineset)
         if optimizeset is not None: self.assign_optimizeset(optimizeset)
-
 
     def tick(self):
 

@@ -50,10 +50,10 @@ class EngineHost:
         with self.statelock:
             self.mode_recurrent = mode_recurrent
 
-    def enable(self):
+    def enable_sync(self):
         self.enable.set()
 
-    def disable(self):
+    def disable_sync(self):
         self.enable.clear()
         
     def configure(self, authkey):
