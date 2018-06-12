@@ -12,7 +12,9 @@ class EngineWorker:
 	def __init__(self):
 		
 		self.measure = measure.KreaLLMeasure()
+		self.measureir_hash = hash(self.measure.current_ir)
 		self.machine = machine.KreaLLMachine()
+		self.machineir_hash = hash(self.machine.current_ir)
 
 		self.assign_machineset(common.ParamSet())
 		self.assign_optimizeset(common.ParamSet())
