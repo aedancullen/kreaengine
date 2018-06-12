@@ -10,6 +10,7 @@ class EngineHost:
 
 	def __init__(self,
 			measureir=common.default_measureir,
+			machineir=common.default_machineir,
 			machineset=common.ParamSet(),
 			optimizeset=common.ParamSet(),
 			mode_recurrent=False
@@ -21,6 +22,7 @@ class EngineHost:
 		self.mode_recurrent = mode_recurrent
 
 		self.assign_measureir(measureir)
+		self.assign_machineir(machineir)
 		self.assign_machineset(machineset)
 		self.assign_optimizeset(optimizeset)
 
@@ -28,6 +30,11 @@ class EngineHost:
 		with self.statelock:
 			self.measureir = measureir
 			self.measureir_hash = hash(self.measureir)
+			
+	def assign_machineir(self, machineir):
+		with self.statelock:
+			self.machineir = machineir
+			self.machineir_hash = hash(self.machineir)
 
 	def assign_machineset(self, machineset):
 		with self.statelock:
@@ -62,9 +69,10 @@ class EngineHost:
 		self.optimizeset = optimizeset
 		self.optimizeset_hash = hash(self.optimizeset)
 
-	def sync(self, measureir_hash, machineset_hash, optimizeset_hash, updateset_merge):
+	def sync(self, measureir_hash, machineir_hash, machineset_hash, optimizeset_hash, updateset_merge):
 
 		ret_measureir = None
+		ret_machineir = None
 		ret_machineset = None
 		ret_optimizeset = None
 
@@ -86,10 +94,12 @@ class EngineHost:
 	
 			if self.measureir_hash != measureir_hash:
 				ret_measureir = self.measureir
+			if self.machineir_hash != machineir_hash:
+				ret_machineir = self.machineir
 			if self.machineset_hash != machineset_hash:
 				ret_machineset = self.machineset
 			if self.optimizeset_hash != optimizeset_hash:
 				ret_optimizeset = self.optimizeset
 
 
-		return ret_measureir, ret_machineset, ret_optimizeset
+		return ret_measureir, ret_machineir, ret_machineset, ret_optimizeset
