@@ -7,10 +7,6 @@ import irload
 import multiprocessing
 from multiprocessing import managers
 
-
-default_measureir = irload.read_module_from_file("default_measure.ll")
-default_machineir = irload.read_module_from_file("default_machine.ll")
-
 class NoHostRetryException(Exception): pass
 
 
