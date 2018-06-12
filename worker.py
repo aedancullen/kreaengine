@@ -51,7 +51,7 @@ class EngineWorker:
 
         try:
             (measureir,machineir,machineset,optimizeset) = self.remote_sync(
-                self.measureir_hash
+                self.measureir_hash,
                 self.machineir_hash,
                 self.machineset_hash,
                 self.optimizeset_hash,
