@@ -9,10 +9,10 @@ import multiprocessing
 class EngineHost:
 
 	def __init__(self,
-			measureir=common.default_measureir,
-			machineir=common.default_machineir,
-			machineset=common.ParamSet(),
-			optimizeset=common.ParamSet(),
+			measureir=None,
+			machineir=None,
+			machineset=None,
+			optimizeset=None,
 			mode_recurrent=False
 		):
 	
@@ -92,13 +92,13 @@ class EngineHost:
 
 		with self.statelock:
 	
-			if self.measureir_hash != measureir_hash:
+			if self.measureir_hash != measureir_hash and self.measureir is not None:
 				ret_measureir = self.measureir
-			if self.machineir_hash != machineir_hash:
+			if self.machineir_hash != machineir_hash and self.machineir is not None:
 				ret_machineir = self.machineir
-			if self.machineset_hash != machineset_hash:
+			if self.machineset_hash != machineset_hash and self.machineset is not None:
 				ret_machineset = self.machineset
-			if self.optimizeset_hash != optimizeset_hash:
+			if self.optimizeset_hash != optimizeset_hash and self.optimizeset is not None:
 				ret_optimizeset = self.optimizeset
 
 
