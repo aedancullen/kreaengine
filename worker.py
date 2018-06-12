@@ -37,8 +37,6 @@ class EngineWorker:
         self.optimizeset = optimizeset
         self.optimizeset_hash = hash(self.optimizeset)
     
-
-
     def configure(self, addrstr, authkey):
         try:
             self.remote_sync = common.worker_getsync(addrstr, authkey)

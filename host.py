@@ -46,28 +46,18 @@ class EngineHost:
             self.optimizeset = optimizeset
             self.optimizeset_hash = hash(self.optimizeset)
 
-    def set_mode_recurrent(self, mode_recurrent):
+    def assign_mode_recurrent(self, mode_recurrent):
         with self.statelock:
             self.mode_recurrent = mode_recurrent
 
-    def enable_sync(self):
+    def enable(self):
         self.enable.set()
 
-    def disable_sync(self):
+    def disable(self):
         self.enable.clear()
-
         
-
     def configure(self, authkey):
         common.host_startsync(self.sync, authkey)
-
-    def set_machineset(machineset):
-        self.machineset = machineset
-        self.machineset_hash = hash(self.machineset)
-
-    def set_optimizeset(optimizeset):
-        self.optimizeset = optimizeset
-        self.optimizeset_hash = hash(self.optimizeset)
 
     def sync(self, measureir_hash, machineir_hash, machineset_hash, optimizeset_hash, updateset_merge):
 
