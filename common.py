@@ -36,20 +36,20 @@ _hostmanager = None
 _workermanager = None
 
 def host_startsync(host_sync_callable, authkey):
-	global _host_sync_callable, _hostmanager
+    global _host_sync_callable, _hostmanager
 
-	_host_sync_callable = host_sync_callable
-	_hostmanager = HostParamSyncManager(address=("", PS_PORT), authkey=authkey)
-	_hostmanager.start()
+    _host_sync_callable = host_sync_callable
+    _hostmanager = HostParamSyncManager(address=("", PS_PORT), authkey=authkey)
+    _hostmanager.start()
 
 def worker_getsync(addrstr, authkey):
-	global _workermanager
+    global _workermanager
 
-	_workermanager = WorkerParamSyncManager(address=(addrstr, PS_PORT), authkey=authkey)
-	_workermanager.connect()
-	syncif = getattr(_workermanager, PSIF_REG_STR)()
-	return getattr(syncif, PSIF_SYNC_FUNC)
+    _workermanager = WorkerParamSyncManager(address=(addrstr, PS_PORT), authkey=authkey)
+    _workermanager.connect()
+    syncif = getattr(_workermanager, PSIF_REG_STR)()
+    return getattr(syncif, PSIF_SYNC_FUNC)
 
 
 class ParamSet:
-	pass
+    pass
