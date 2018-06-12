@@ -29,3 +29,4 @@ class KreaLLMeasure:
         )
         self.__dict__.update(bound_funcs)
         self.current_module = module
+        self.current_ir = ir
