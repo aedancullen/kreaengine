@@ -33,4 +33,4 @@ def bind_funcs_from_module(ir, bind_funcs):
         ptr = engine.get_function_address(name)
         fdict[name] = cfunctype(ptr)
 
-    return fdict
+    return mod, fdict
