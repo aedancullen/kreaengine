@@ -6,7 +6,9 @@
 import irload
 import ctypes as c
 
-KMACHINE_DEFAULT_FN = "default_machine.ll"
+KMACHINE_DEFAULT_IR = """\
+"""
+
 KMACHINE_IR_FUNCS = [
 ]
 
@@ -15,7 +17,7 @@ class KreaLLMachine:
     def __init__(self, ir=None):
         self.current_module = None
         
-        if ir is None: ir = irload.read_module_from_file(KMACHINE_DEFAULT_FN)
+        if ir is None: ir = KMACHINE_DEFAULT_IR
         self.update(ir)
         
     def update(self, ir):
