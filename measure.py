@@ -6,7 +6,9 @@
 import irload
 import ctypes as c
 
-KMEASURE_DEFAULT_FN = "default_measure.ll"
+KMEASURE_DEFAULT_IR = """\
+"""
+
 KMEASURE_IR_FUNCS = [
 ]
 
@@ -15,7 +17,7 @@ class KreaLLMeasure:
     def __init__(self, ir=None):
         self.current_module = None
         
-        if ir is None: ir = irload.read_module_from_file(KMEASURE_DEFAULT_FN)
+        if ir is None: ir = KMEASURE_DEFAULT_IR
         self.update(ir)
         
     def update(self, ir):
