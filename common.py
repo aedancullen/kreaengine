@@ -13,43 +13,63 @@ class NoHostRetryException(Exception): pass
 PS_PORT = 17100
 
 PSIF_REG_STR = "kreaengine_psif"
-PSIF_SYNC_FUNC = "kreaengine_sync"
+PSIF_SYNC_FUNC = "sync"
+PSIF_CTRL_FUNCS = [
+    "assign_measureir",
+    "assign_machineir",
+    "assign_machineset",
+    "assign_optimizeset",
+    "assign_mode_recurrent",
+    "enable_sync",
+    "disable_sync"
+]
 
+_psw = None
 
-_host_sync_callable = lambda *args,**kwargs: None
+class ServerParamSyncManager(managers.BaseManager): pass
+class ClientParamSyncManager(managers.BaseManager): pass
 
-
-class ParamSyncInterface: pass
-
-_psw = ParamSyncInterface()
-setattr(_psw, PSIF_SYNC_FUNC, lambda *args,**kwargs:_host_sync_callable(*args,**kwargs))
-
-
-class HostParamSyncManager(managers.BaseManager): pass
-class WorkerParamSyncManager(managers.BaseManager): pass
-
-HostParamSyncManager.register(PSIF_REG_STR, callable=lambda:_psw)
-WorkerParamSyncManager.register(PSIF_REG_STR)
+ServerParamSyncManager.register(PSIF_REG_STR, callable=lambda:_psw)
+ClientParamSyncManager.register(PSIF_REG_STR)
 
 
 _hostmanager = None
 _workermanager = None
+_ctrlmanager = None
 
-def host_startsync(host_sync_callable, authkey):
-    global _host_sync_callable, _hostmanager
 
-    _host_sync_callable = host_sync_callable
-    _hostmanager = HostParamSyncManager(address=("", PS_PORT), authkey=authkey)
+def parallel_boostrap_host(instance, authkey):
+    global _hostmanager, _psw
+
+    _psw = instance
+    _hostmanager = ServerParamSyncManager(address=("", PS_PORT), authkey=authkey)
     _hostmanager.start()
+    
+def parallel_boostrap_worker(addrstr, authkey):
+    pass
 
-def worker_getsync(addrstr, authkey):
+
+def bind_sync(addrstr, authkey):
     global _workermanager
 
-    _workermanager = WorkerParamSyncManager(address=(addrstr, PS_PORT), authkey=authkey)
+    _workermanager = ClientParamSyncManager(address=(addrstr, PS_PORT), authkey=authkey)
     _workermanager.connect()
     syncif = getattr(_workermanager, PSIF_REG_STR)()
+    
     return getattr(syncif, PSIF_SYNC_FUNC)
 
+def bind_ctrl(addrstr, authkey):
+    global _ctrlmanager
+    
+    _ctrlmanager = ClientParamSyncManager(address=(addrstr, PS_PORT), authkey=authkey)
+    _ctrlmanager.connect()
+    syncif = getattr(_ctrlmanager, PSIF_REG_STR)()
+    
+    bound_funcs = {}
+    for func in PSIF_CTRL_FUNCS:
+        bound_funcs[func] = getattr(syncif, func)
+        
+    return bound_funcs
 
 class ParamSet:
     pass
