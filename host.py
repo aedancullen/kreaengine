@@ -55,6 +55,9 @@ class EngineHost:
 
     def disable_sync(self):
         self.enable.clear()
+        
+    def configure(self, authkey):
+        common.host_startsync(self.sync, authkey)
 
     def sync(self, measureir_hash, machineir_hash, machineset_hash, optimizeset_hash, updateset_merge):
 
